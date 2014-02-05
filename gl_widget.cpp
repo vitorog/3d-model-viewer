@@ -115,12 +115,17 @@ void GLWidget::RenderModel()
             glBegin(GL_QUADS);
         }
         std::vector<int>::iterator text_coord_it = model_->text_coords_index_.begin();
+        std::vector<int>::iterator normal_it = model_->normals_index_.begin();
         for(std::vector<int>::iterator vert_it = model_->vertices_index_.begin();
             vert_it != model_->vertices_index_.end();
-            vert_it++, text_coord_it++)
+            vert_it++, text_coord_it++, normal_it++)
         {
             glm::vec2 text_coords = model_->text_coords_.at((*text_coord_it) - 1);
             glTexCoord2f(text_coords.x,text_coords.y);
+
+            glm::vec3 n = model_->normals_.at((*normal_it) - 1);
+            glNormal3f(n.x,n.y,n.z);
+
             glm::vec3 v = model_->vertices_.at((*vert_it) - 1);
             glVertex3f(v.x,v.y,v.z);
         }
