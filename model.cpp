@@ -44,11 +44,6 @@ int Model::Load(const std::string &path)
                         ret = -1;
                         break;
                     }
-
-                    double z = atof(tokens.at(2).c_str());
-//                    std::cout << tokens.at(2) << std::endl;
-//                    std::cout << tokens.at(2).c_str() << std::endl;
-//                    std::cout << z << std::endl;
                     glm::vec3 vertice(atof(tokens.at(0).c_str()),
                                       atof(tokens.at(1).c_str()),
                                       atof(tokens.at(2).c_str()));
