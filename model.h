@@ -11,7 +11,7 @@ class Model
 {
 public:
     Model();
-    int Load(const std::string &s);
+    int Load(const std::string &path);
 private:
     std::vector<glm::vec3> vertices_;
     std::vector<glm::vec3> normals_;
