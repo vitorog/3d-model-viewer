@@ -17,11 +17,13 @@ SOURCES += main.cpp\
         main_window.cpp \
     model.cpp \
     material.cpp \
-    utils.cpp
+    utils.cpp \
+    gl_widget.cpp
 
 HEADERS  += main_window.h \
     model.h \
     material.h \
-    utils.h
+    utils.h \
+    gl_widget.h
 
 FORMS    += main_window.ui

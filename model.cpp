@@ -1,5 +1,6 @@
 #include "model.h"
 
+#include <iostream>
 #include <fstream>
 
 Model::Model()
@@ -43,6 +44,11 @@ int Model::Load(const std::string &path)
                         ret = -1;
                         break;
                     }
+
+                    double z = atof(tokens.at(2).c_str());
+//                    std::cout << tokens.at(2) << std::endl;
+//                    std::cout << tokens.at(2).c_str() << std::endl;
+//                    std::cout << z << std::endl;
                     glm::vec3 vertice(atof(tokens.at(0).c_str()),
                                       atof(tokens.at(1).c_str()),
                                       atof(tokens.at(2).c_str()));
@@ -71,7 +77,11 @@ int Model::Load(const std::string &path)
                 }
                 //Face line
                 if( line_id == "f" ){
-                    if(tokens.size() < 3){
+                    if(tokens.size() == 3){
+                        tri_faces_ = true;
+                    }else if(tokens.size() == 4){
+                        tri_faces_ = false;
+                    }else{
                         ret = -1;
                         break;
                     }

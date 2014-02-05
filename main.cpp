@@ -3,15 +3,12 @@
 
 #include "model.h"
 
+#include <iostream>
 int main(int argc, char *argv[])
 {
-    Model m;
-    int ret = m.Load("test_model/capsule.obj");
-    return ret;
-#test
-//    QApplication a(argc, argv);
-//    MainWindow w;
-//    w.show();
-
-//    return a.exec();
+    QApplication a(argc, argv);
+    setlocale(LC_ALL,"C"); //Qt was changing the locale which caused the atof function to expect commas instead of points...
+    MainWindow w;
+    w.show();
+    return a.exec();
 }
