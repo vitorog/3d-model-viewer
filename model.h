@@ -12,8 +12,10 @@ class Model
 public:
     Model();
     int Load(const std::string &path);
-    bool tri_faces_;
+
 //private:
+    bool tri_faces_;
+    glm::vec3 center_;
     std::vector<glm::vec3> vertices_;
     std::vector<glm::vec3> normals_;
     std::vector<glm::vec2> text_coords_;

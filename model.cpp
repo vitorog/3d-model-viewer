@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
 Model::Model()
 {
@@ -9,6 +10,7 @@ Model::Model()
 
 int Model::Load(const std::string &path)
 {
+    double min_x=0,min_y=0,min_z=0,max_x=0,max_y=0,max_z=0;
     int ret = 0;
     std::ifstream file(path.c_str());
     if(file.is_open()){
@@ -44,9 +46,29 @@ int Model::Load(const std::string &path)
                         ret = -1;
                         break;
                     }
-                    glm::vec3 vertice(atof(tokens.at(0).c_str()),
-                                      atof(tokens.at(1).c_str()),
-                                      atof(tokens.at(2).c_str()));
+                    double x = atof(tokens.at(0).c_str());
+                    double y = atof(tokens.at(1).c_str());
+                    double z = atof(tokens.at(2).c_str());
+                    if(x <= min_x){
+                        min_x = x;
+                    }
+                    if(x >= max_x){
+                        max_x = x;
+                    }
+                    if(y <= min_y){
+                        min_y = y;
+                    }
+                    if(y >= max_y){
+                        max_y = y;
+                    }
+                    if(z <= min_z){
+                        min_z = z;
+                    }
+                    if(z >= max_z){
+                        max_z = max_z;
+                    }
+
+                    glm::vec3 vertice((float)x,(float)y,(float)z);
                     vertices_.push_back(vertice);
                 }
                 //Vertice normal line
@@ -99,6 +121,12 @@ int Model::Load(const std::string &path)
         }
 EndLoop:
         file.close();
+        double center_x = (max_x + min_x)/2.0f;
+        double center_y = (max_y + min_y)/2.0f;
+        double center_z = (max_z + min_z)/2.0f;
+
+        center_ = glm::vec3(center_x,center_y,center_z);
+
     }else{
         ret = -1;
     }

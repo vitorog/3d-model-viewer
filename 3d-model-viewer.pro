@@ -13,6 +13,8 @@ TEMPLATE = app
 
 INCLUDEPATH += /home/vitor/glm/glm-0.9.4.3
 
+LIBS += -L/usr/local/lib -lGLU
+
 SOURCES += main.cpp\
         main_window.cpp \
     model.cpp \

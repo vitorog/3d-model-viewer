@@ -4,6 +4,8 @@
 
 #include "model.h"
 
+#include <GL/glu.h>
+
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(parent),
     model_(NULL)
@@ -63,7 +65,7 @@ void GLWidget::initializeGL()
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_MULTISAMPLE);
-    static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
+    static GLfloat lightPosition[4] = { 0.0, 0.0, 1.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
 
@@ -71,10 +73,13 @@ void GLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    glTranslatef(0.0f,0.0f,0.0f);
+    gluLookAt(0.0f,0.0f,0.0f,0.0f,0.0f,-1.0f,0.0f,1.0f,0.0f);
+    glTranslatef(0.0f,0.0f,-5.0f);
+//    glTranslatef(model_->center_.x,model_->center_.y,model_->center_.z);
     glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
     glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);
     glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
+//    glTranslatef(-model_->center_.x,-model_->center_.y,-model_->center_.z);
     RenderModel();
 }
 
@@ -84,7 +89,9 @@ void GLWidget::resizeGL(int width, int height)
     glViewport((width - side) / 2, (height - side) / 2, side, side);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    gluPerspective(45.0f,double(width)/double(height),1.0f,20.0f);
     glMatrixMode(GL_MODELVIEW);
+    gluLookAt(0.0f,0.0f,0.0f,0.0f,0.0f,-1.0f,0.0f,1.0f,0.0f);
 }
 
 //Temporary render function for testing purposes
