@@ -10,7 +10,7 @@
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(parent),
     model_(NULL)
-{    
+{
     xRot = 0;
     yRot = 0;
     zRot = 0;
@@ -57,7 +57,6 @@ void GLWidget::setZRotation(int angle)
 void GLWidget::SetModel(Model *m)
 {
     model_ = m;
-
 }
 
 //TODO: Create a GLSL renderer...
@@ -105,10 +104,33 @@ void GLWidget::resizeGL(int width, int height)
 //Temporary render function for testing purposes
 void GLWidget::RenderModel()
 {
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture( GL_TEXTURE_2D, texture_ids_[0] );
     if(model_ != NULL){
+        Material mat = model_->materials_.at(0);
 
+        GLfloat ambient[4];
+        ambient[0] = mat.ka_.x;
+        ambient[1] = mat.ka_.y;
+        ambient[2] = mat.ka_.z;
+        ambient[3] = 1.0;
+        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,ambient);
+
+        GLfloat diffuse[4];
+        diffuse[0] = mat.kd_.x;
+        diffuse[1] = mat.kd_.y;
+        diffuse[2] = mat.kd_.z;
+        diffuse[3] = 1.0;
+
+        glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,diffuse);
+
+        GLfloat specular[4];
+        specular[0] = mat.ks_.x;
+        specular[1] = mat.ks_.y;
+        specular[2] = mat.ks_.z;
+        specular[3] = 1.0;
+        glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
+
+
+        glBindTexture( GL_TEXTURE_2D, texture_ids_[0] );
         if(model_->tri_faces_){
             glBegin(GL_TRIANGLES);
         }else{
