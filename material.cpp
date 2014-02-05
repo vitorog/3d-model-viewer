@@ -77,9 +77,10 @@ int Material::Load(const std::string &path)
             }
 
         }
+        file.close();
     }else{
         ret = -1;
     }
-    file.close();
+
     return ret;
 }

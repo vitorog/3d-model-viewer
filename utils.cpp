@@ -22,14 +22,10 @@ std::vector<std::string> Split(const std::string &s, const char &delimiter)
 
 std::string GetFilePath(const std::string &s)
 {
-    std::vector<std::string> tokens = Split(s, folder_separator.at(0) );
-    tokens.pop_back();
-    std::string path;
-    for(std::vector<std::string>::iterator it = tokens.begin();
-        it != tokens.end();
-        it++){
-        path.append((*it));
-        path.append(folder_separator.c_str());
+    int index = s.find_last_of(folder_separator);
+    if(index==std::string::npos){
+        return "";
     }
+    std::string path = s.substr(0,index+1);
     return path;
 }

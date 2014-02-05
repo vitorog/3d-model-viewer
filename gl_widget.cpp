@@ -57,6 +57,19 @@ void GLWidget::setZRotation(int angle)
 void GLWidget::SetModel(Model *m)
 {
     model_ = m;
+    LoadModelTexture();
+}
+
+void GLWidget::Reload()
+{
+    if(!texture_ids_.empty()){
+        glDeleteTextures(1, &texture_ids_[0]);
+        texture_ids_.clear();
+    }
+    xRot = 0;
+    yRot = 0;
+    zRot = 0;
+    LoadModelTexture();
 }
 
 //TODO: Create a GLSL renderer...
@@ -72,8 +85,6 @@ void GLWidget::initializeGL()
     glEnable(GL_MULTISAMPLE);
     static GLfloat lightPosition[4] = { 0.0, 0.0, 1.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
-
-    LoadModelTexture();
 }
 
 void GLWidget::paintGL()
@@ -154,16 +165,16 @@ void GLWidget::RenderModel()
 
         glEnd();
     }else{
-        glBegin(GL_QUADS);
-        glTexCoord2f(0.0f,0.0f);
-        glVertex3f(0.0f,0.0f,0.0f);
-        glTexCoord2f(1.0f,0.0f);
-        glVertex3f(1.0f,0.0f,0.0f);
-        glTexCoord2f(1.0f,1.0f);
-        glVertex3f(1.0f,1.0f,0.0f);
-        glTexCoord2f(0.0f,1.0f);
-        glVertex3f(0.0f,1.0f,0.0f);
-        glEnd();
+        //        glBegin(GL_QUADS);
+        //        glTexCoord2f(0.0f,0.0f);
+        //        glVertex3f(0.0f,0.0f,0.0f);
+        //        glTexCoord2f(1.0f,0.0f);
+        //        glVertex3f(1.0f,0.0f,0.0f);
+        //        glTexCoord2f(1.0f,1.0f);
+        //        glVertex3f(1.0f,1.0f,0.0f);
+        //        glTexCoord2f(0.0f,1.0f);
+        //        glVertex3f(0.0f,1.0f,0.0f);
+        //        glEnd();
     }
 }
 

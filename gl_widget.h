@@ -12,6 +12,7 @@ class GLWidget : public QGLWidget
 public:
     explicit GLWidget(QWidget *parent = 0);
     void SetModel(Model* m);
+    void Reload();
 signals:
     void xRotationChanged(int angle);
     void yRotationChanged(int angle);

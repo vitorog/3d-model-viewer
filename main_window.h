@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 class GLWidget;
+class Model;
 
 namespace Ui {
 class MainWindow;
@@ -16,10 +17,13 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
+public slots:
+    void OpenFile();
+    void Exit();
 private:
     Ui::MainWindow *ui;
     GLWidget *gl_widget_;
+    Model* current_model_;
 };
 
 #endif // MAIN_WINDOW_H
