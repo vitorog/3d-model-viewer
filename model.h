@@ -20,6 +20,7 @@ private:
     std::vector<int> normals_index_;
     std::vector<int> text_coords_index_;
     std::map<std::string, int> materials_id_;
+    std::vector<Material> materials_;
 };
 
 #endif // MODEL_H

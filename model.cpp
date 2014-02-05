@@ -24,7 +24,18 @@ int Model::Load(const std::string &path)
                         break;
                     }
                     materials_id_.insert(std::pair<std::string, int>(tokens.at(0),materials_id_.size()));
-                    //LoadMaterial
+                    Material mat;
+
+                    std::string curr_directory = GetFilePath(path);
+                    std::string material_path;
+                    material_path.append(curr_directory);
+                    material_path.append(tokens.at(0));
+
+                    if( mat.Load(material_path) != 0){
+                        ret = -1;
+                        break;
+                    }
+                    materials_.push_back(mat);
                 }
                 //Vertice line
                 if( line_id == "v" ){
@@ -44,8 +55,8 @@ int Model::Load(const std::string &path)
                         break;
                     }
                     glm::vec3 normal(atof(tokens.at(0).c_str()),
-                                      atof(tokens.at(1).c_str()),
-                                      atof(tokens.at(2).c_str()));
+                                     atof(tokens.at(1).c_str()),
+                                     atof(tokens.at(2).c_str()));
                     normals_.push_back(normal);
                 }
                 //Vertice texture coordinate line
@@ -55,7 +66,7 @@ int Model::Load(const std::string &path)
                         break;
                     }
                     glm::vec2 text_coord(atof(tokens.at(0).c_str()),
-                                      atof(tokens.at(1).c_str()));
+                                         atof(tokens.at(1).c_str()));
                     text_coords_.push_back(text_coord);
                 }
                 //Face line
@@ -81,8 +92,10 @@ int Model::Load(const std::string &path)
                 }
             }
         }
-    }
 EndLoop:
-    file.close();
+        file.close();
+    }else{
+        ret = -1;
+    }
     return ret;
 }

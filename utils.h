@@ -5,17 +5,9 @@
 #include <vector>
 #include <sstream>
 
-std::vector<std::string> Split(const std::string &s, const char &delimiter)
-{
-    std::vector<std::string> tokens;
-    std::stringstream ss(s);
-    std::string token;
-    while(std::getline(ss,token,delimiter)){
-        if(!token.empty()){
-            tokens.push_back(token);
-        }
-    }
-    return tokens;
-}
+std::vector<std::string> Split(const std::string &s, const char &delimiter);
+
+//Removes a file name and returns the path
+std::string GetFilePath(const std::string &s);
 
 #endif // UTILS_H

@@ -16,7 +16,8 @@ INCLUDEPATH += /home/vitor/glm/glm-0.9.4.3
 SOURCES += main.cpp\
         main_window.cpp \
     model.cpp \
-    material.cpp
+    material.cpp \
+    utils.cpp
 
 HEADERS  += main_window.h \
     model.h \

@@ -6,7 +6,8 @@
 int main(int argc, char *argv[])
 {
     Model m;
-    return m.Load("test_model/capsule.obj");
+    int ret = m.Load("test_model/capsule.obj");
+    return ret;
 //    QApplication a(argc, argv);
 //    MainWindow w;
 //    w.show();
