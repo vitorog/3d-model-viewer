@@ -1,11 +1,51 @@
 #include "gl_widget.h"
 
+#include <QMouseEvent>
+
 #include "model.h"
 
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(parent),
     model_(NULL)
 {    
+}
+
+static void qNormalizeAngle(int &angle)
+{
+    while (angle < 0)
+        angle += 360 * 16;
+    while (angle > 360 * 16)
+        angle -= 360 * 16;
+}
+
+void GLWidget::setXRotation(int angle)
+{
+    qNormalizeAngle(angle);
+    if (angle != xRot) {
+        xRot = angle;
+        emit xRotationChanged(angle);
+        updateGL();
+    }
+}
+
+void GLWidget::setYRotation(int angle)
+{
+    qNormalizeAngle(angle);
+    if (angle != yRot) {
+        yRot = angle;
+        emit yRotationChanged(angle);
+        updateGL();
+    }
+}
+
+void GLWidget::setZRotation(int angle)
+{
+    qNormalizeAngle(angle);
+    if (angle != zRot) {
+        zRot = angle;
+        emit zRotationChanged(angle);
+        updateGL();
+    }
 }
 
 void GLWidget::SetModel(Model *m)
@@ -31,6 +71,10 @@ void GLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+    glTranslatef(0.0f,0.0f,0.0f);
+    glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
+    glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);
+    glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
     RenderModel();
 }
 
@@ -48,15 +92,15 @@ void GLWidget::RenderModel()
 {
     if(model_ != NULL){
         if(model_->tri_faces_){
-            glBegin(GL_POINTS);
+            glBegin(GL_TRIANGLES);
         }else{
             glBegin(GL_QUADS);
         }
-        for(std::vector<glm::vec3>::iterator it = model_->vertices_.begin();
-            it != model_->vertices_.end();
+        for(std::vector<int>::iterator it = model_->vertices_index_.begin();
+            it != model_->vertices_index_.end();
             it++)
         {
-            glm::vec3 v = (*it);
+            glm::vec3 v = model_->vertices_.at((*it) - 1);
             glVertex3f(v.x,v.y,v.z);
         }
 
@@ -68,4 +112,24 @@ void GLWidget::RenderModel()
         glVertex3f(1.0f,1.0f,0.0f);
         glEnd();
     }
+}
+
+void GLWidget::mousePressEvent(QMouseEvent *event)
+{
+    lastPos = event->pos();
+}
+
+void GLWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    int dx = event->x() - lastPos.x();
+    int dy = event->y() - lastPos.y();
+
+    if (event->buttons() & Qt::LeftButton) {
+        setXRotation(xRot + 8 * dy);
+        setYRotation(yRot + 8 * dx);
+    } else if (event->buttons() & Qt::RightButton) {
+        setXRotation(xRot + 8 * dy);
+        setZRotation(zRot + 8 * dx);
+    }
+    lastPos = event->pos();
 }
