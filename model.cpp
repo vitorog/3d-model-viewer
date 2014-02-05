@@ -29,9 +29,9 @@ int Model::Load(const std::string &path)
                     materials_id_.insert(std::pair<std::string, int>(tokens.at(0),materials_id_.size()));
                     Material mat;
 
-                    std::string curr_directory = GetFilePath(path);
+                    model_dir_ = GetFilePath(path);
                     std::string material_path;
-                    material_path.append(curr_directory);
+                    material_path.append(model_dir_);
                     material_path.append(tokens.at(0));
 
                     if( mat.Load(material_path) != 0){

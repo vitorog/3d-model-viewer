@@ -11,7 +11,7 @@ class Material
 public:
     Material();
     int Load(const std::string &path);
-private:
+//private:
     std::string name_;
     glm::vec3 ka_;
     glm::vec3 kd_;

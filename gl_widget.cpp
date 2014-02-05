@@ -1,6 +1,7 @@
 #include "gl_widget.h"
 
 #include <QMouseEvent>
+#include <QImage>
 
 #include "model.h"
 
@@ -10,6 +11,9 @@ GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(parent),
     model_(NULL)
 {    
+    xRot = 0;
+    yRot = 0;
+    zRot = 0;
 }
 
 static void qNormalizeAngle(int &angle)
@@ -53,6 +57,7 @@ void GLWidget::setZRotation(int angle)
 void GLWidget::SetModel(Model *m)
 {
     model_ = m;
+
 }
 
 //TODO: Create a GLSL renderer...
@@ -62,11 +67,14 @@ void GLWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glShadeModel(GL_SMOOTH);
+    glEnable(GL_TEXTURE_2D);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_MULTISAMPLE);
     static GLfloat lightPosition[4] = { 0.0, 0.0, 1.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+
+    LoadModelTexture();
 }
 
 void GLWidget::paintGL()
@@ -75,11 +83,11 @@ void GLWidget::paintGL()
     glLoadIdentity();
     gluLookAt(0.0f,0.0f,0.0f,0.0f,0.0f,-1.0f,0.0f,1.0f,0.0f);
     glTranslatef(0.0f,0.0f,-5.0f);
-//    glTranslatef(model_->center_.x,model_->center_.y,model_->center_.z);
+    //    glTranslatef(model_->center_.x,model_->center_.y,model_->center_.z);
     glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
     glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);
     glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
-//    glTranslatef(-model_->center_.x,-model_->center_.y,-model_->center_.z);
+    //    glTranslatef(-model_->center_.x,-model_->center_.y,-model_->center_.z);
     RenderModel();
 }
 
@@ -97,27 +105,60 @@ void GLWidget::resizeGL(int width, int height)
 //Temporary render function for testing purposes
 void GLWidget::RenderModel()
 {
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture( GL_TEXTURE_2D, texture_ids_[0] );
     if(model_ != NULL){
+
         if(model_->tri_faces_){
             glBegin(GL_TRIANGLES);
         }else{
             glBegin(GL_QUADS);
         }
-        for(std::vector<int>::iterator it = model_->vertices_index_.begin();
-            it != model_->vertices_index_.end();
-            it++)
+        std::vector<int>::iterator text_coord_it = model_->text_coords_index_.begin();
+        for(std::vector<int>::iterator vert_it = model_->vertices_index_.begin();
+            vert_it != model_->vertices_index_.end();
+            vert_it++, text_coord_it++)
         {
-            glm::vec3 v = model_->vertices_.at((*it) - 1);
+            glm::vec2 text_coords = model_->text_coords_.at((*text_coord_it) - 1);
+            glTexCoord2f(text_coords.x,text_coords.y);
+            glm::vec3 v = model_->vertices_.at((*vert_it) - 1);
             glVertex3f(v.x,v.y,v.z);
         }
 
         glEnd();
     }else{
-        glBegin(GL_TRIANGLES);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0f,0.0f);
         glVertex3f(0.0f,0.0f,0.0f);
+        glTexCoord2f(1.0f,0.0f);
         glVertex3f(1.0f,0.0f,0.0f);
+        glTexCoord2f(1.0f,1.0f);
         glVertex3f(1.0f,1.0f,0.0f);
+        glTexCoord2f(0.0f,1.0f);
+        glVertex3f(0.0f,1.0f,0.0f);
         glEnd();
+    }
+}
+
+void GLWidget::LoadModelTexture()
+{
+    if(model_ != NULL){
+        for(std::vector<Material>::iterator it = model_->materials_.begin();
+            it != model_->materials_.end();
+            it++){
+
+            QString texture_path = QString::fromStdString(model_->model_dir_) + QString::fromStdString((*it).map_kd_);
+            QImage texture = QGLWidget::convertToGLFormat(QImage(texture_path));
+
+            GLuint texture_id;
+            glGenTextures(1,&texture_id);
+            glBindTexture( GL_TEXTURE_2D, texture_id );
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture.width(), texture.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.bits());
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
+            texture_ids_.push_back(texture_id);
+        }
     }
 }
 

@@ -31,12 +31,15 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
 private:
     void RenderModel();
+    void LoadModelTexture();
 
     Model *model_;
     int xRot;
     int yRot;
     int zRot;
     QPoint lastPos;
+
+    std::vector<GLuint> texture_ids_;
 };
 
 #endif // GL_WIDGET_H
