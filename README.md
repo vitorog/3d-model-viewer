@@ -4,5 +4,8 @@
 Simple Wavefront(.obj) viewer
 
 Currently supports Wavefront(.obj) file loading with associated material(.mtl) file.
-Only minimal .obj file with single material and texture supported for now.
+Only one material and texture is supported for now.
+
+*Requires GLM: http://glm.g-truc.net/0.9.5/index.html
+
 
