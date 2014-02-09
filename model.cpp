@@ -113,8 +113,8 @@ int Model::Load(const std::string &path)
                             goto EndLoop;
                         }
                         vertices_index_.push_back(atoi(face_tokens.at(0).c_str()));
-                        normals_index_.push_back(atoi(face_tokens.at(1).c_str()));
-                        text_coords_index_.push_back(atoi(face_tokens.at(2).c_str()));
+                        text_coords_index_.push_back(atoi(face_tokens.at(1).c_str()));
+                        normals_index_.push_back(atoi(face_tokens.at(2).c_str()));
                     }
                 }
             }
