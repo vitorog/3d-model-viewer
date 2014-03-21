@@ -11,21 +11,22 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = 3d-model-viewer
 TEMPLATE = app
 
-INCLUDEPATH += /home/vitor/glm/glm-0.9.4.3
+INCLUDEPATH += ../shade-framework
+INCLUDEPATH += ../../../glm-0.9.5.2/glm
+
 
 LIBS += -L/usr/local/lib -lGLU
 
 SOURCES += main.cpp\
         main_window.cpp \
-    model.cpp \
-    material.cpp \
-    utils.cpp \
     gl_widget.cpp
 
 HEADERS  += main_window.h \
-    model.h \
-    material.h \
-    utils.h \
     gl_widget.h
 
 FORMS    += main_window.ui
+
+unix:!macx: LIBS += -L$$PWD/../Builds/shade-framework-build/ -lshade-framework
+
+INCLUDEPATH += $$PWD/../Builds/shade-framework-build
+DEPENDPATH += $$PWD/../Builds/shade-framework-build
