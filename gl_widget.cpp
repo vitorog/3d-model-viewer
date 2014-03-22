@@ -3,13 +3,13 @@
 #include <QMouseEvent>
 #include <QImage>
 
-#include "model.h"
+#include "../shade-framework/scene_loader.h"
 
 #include <GL/glu.h>
 
 GLWidget::GLWidget(QWidget *parent) :
     QGLWidget(parent),
-    model_(NULL)
+    scene_(NULL)
 {
     xRot = 0;
     yRot = 0;
@@ -54,10 +54,10 @@ void GLWidget::setZRotation(int angle)
     }
 }
 
-void GLWidget::SetModel(Model *m)
+void GLWidget::SetScene(SceneLoader *m)
 {
-    model_ = m;
-    LoadModelTexture();
+    scene_ = m;
+    LoadSceneTextures();
 }
 
 void GLWidget::Reload()
@@ -69,7 +69,7 @@ void GLWidget::Reload()
     xRot = 0;
     yRot = 0;
     zRot = 0;
-    LoadModelTexture();
+    LoadSceneTextures();
 }
 
 //TODO: Create a GLSL renderer...
@@ -98,7 +98,7 @@ void GLWidget::paintGL()
     glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);
     glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
     //    glTranslatef(-model_->center_.x,-model_->center_.y,-model_->center_.z);
-    RenderModel();
+    RenderScene();
 }
 
 void GLWidget::resizeGL(int width, int height)
@@ -113,10 +113,10 @@ void GLWidget::resizeGL(int width, int height)
 }
 
 //Temporary render function for testing purposes
-void GLWidget::RenderModel()
+void GLWidget::RenderScene()
 {
-    if(model_ != NULL){
-        Material mat = model_->materials_.at(0);
+    if(scene_ != NULL){
+        Material mat = scene_->materials_.at(0);
 
         GLfloat ambient[4];
         ambient[0] = mat.ka_.x;
@@ -140,26 +140,29 @@ void GLWidget::RenderModel()
         specular[3] = 1.0;
         glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
 
-
-        glBindTexture( GL_TEXTURE_2D, texture_ids_[0] );
-        if(model_->tri_faces_){
+        if(scene_->has_texture_){
+            glBindTexture( GL_TEXTURE_2D, texture_ids_[0] );
+        }
+        if(scene_->tri_faces_){
             glBegin(GL_TRIANGLES);
         }else{
             glBegin(GL_QUADS);
         }
-        std::vector<int>::iterator text_coord_it = model_->text_coords_index_.begin();
-        std::vector<int>::iterator normal_it = model_->normals_index_.begin();
-        for(std::vector<int>::iterator vert_it = model_->vertices_index_.begin();
-            vert_it != model_->vertices_index_.end();
+        std::vector<int>::iterator text_coord_it = scene_->text_coords_index_.begin();
+        std::vector<int>::iterator normal_it = scene_->normals_index_.begin();
+        for(std::vector<int>::iterator vert_it = scene_->vertices_index_.begin();
+            vert_it != scene_->vertices_index_.end();
             vert_it++, text_coord_it++, normal_it++)
         {
-            glm::vec2 text_coords = model_->text_coords_.at((*text_coord_it) - 1);
-            glTexCoord2f(text_coords.x,text_coords.y);
+            if(scene_->has_texture_){
+                glm::vec2 text_coords = scene_->text_coords_.at((*text_coord_it) - 1);
+                glTexCoord2f(text_coords.x,text_coords.y);
+            }
 
-            glm::vec3 n = model_->normals_.at((*normal_it) - 1);
+            glm::vec3 n = scene_->normals_.at((*normal_it) - 1);
             glNormal3f(n.x,n.y,n.z);
 
-            glm::vec3 v = model_->vertices_.at((*vert_it) - 1);
+            glm::vec3 v = scene_->vertices_.at((*vert_it) - 1);
             glVertex3f(v.x,v.y,v.z);
         }
 
@@ -178,14 +181,14 @@ void GLWidget::RenderModel()
     }
 }
 
-void GLWidget::LoadModelTexture()
+void GLWidget::LoadSceneTextures()
 {
-    if(model_ != NULL){
-        for(std::vector<Material>::iterator it = model_->materials_.begin();
-            it != model_->materials_.end();
+    if(scene_ != NULL && scene_->has_texture_){
+        for(std::vector<Material>::iterator it = scene_->materials_.begin();
+            it != scene_->materials_.end();
             it++){
 
-            QString texture_path = QString::fromStdString(model_->model_dir_) + QString::fromStdString((*it).map_kd_);
+            QString texture_path = QString::fromStdString(scene_->scene_dir_) + QString::fromStdString((*it).map_kd_);
             QImage texture = QGLWidget::convertToGLFormat(QImage(texture_path));
 
             GLuint texture_id;

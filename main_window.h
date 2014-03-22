@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 class GLWidget;
-class Model;
+class SceneLoader;
 
 namespace Ui {
 class MainWindow;
@@ -23,7 +23,7 @@ public slots:
 private:
     Ui::MainWindow *ui;
     GLWidget *gl_widget_;
-    Model* current_model_;
+    SceneLoader* current_model_;
 };
 
 #endif // MAIN_WINDOW_H

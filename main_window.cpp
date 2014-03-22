@@ -3,7 +3,7 @@
 
 #include <QFileDialog>
 
-#include "model.h"
+#include "scene_loader.h"
 #include "gl_widget.h"
 
 #include <QDebug>
@@ -38,9 +38,9 @@ void MainWindow::OpenFile()
         if(current_model_ != NULL){
             delete current_model_;
         }
-        current_model_ = new Model();
+        current_model_ = new SceneLoader();
         if(current_model_->Load(file_names.toStdString()) == 0){
-            gl_widget_->SetModel(current_model_);
+            gl_widget_->SetScene(current_model_);
             gl_widget_->Reload();
         }else{
             qDebug() << "Failed to load file.";

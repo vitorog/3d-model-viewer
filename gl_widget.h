@@ -4,14 +4,14 @@
 #include <QGLWidget>
 
 
-class Model;
+class SceneLoader;
 
 class GLWidget : public QGLWidget
 {
     Q_OBJECT
 public:
     explicit GLWidget(QWidget *parent = 0);
-    void SetModel(Model* m);
+    void SetScene(SceneLoader* m);
     void Reload();
 signals:
     void xRotationChanged(int angle);
@@ -31,10 +31,10 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
 private:
-    void RenderModel();
-    void LoadModelTexture();
+    void RenderScene();
+    void LoadSceneTextures();
 
-    Model *model_;
+    SceneLoader *scene_;
     int xRot;
     int yRot;
     int zRot;

@@ -1,7 +1,7 @@
 #include "main_window.h"
 #include <QApplication>
 
-#include "model.h"
+#include "../shade-framework/scene_loader.h"
 
 #include <iostream>
 int main(int argc, char *argv[])
